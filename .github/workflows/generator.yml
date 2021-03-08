@@ -1,0 +1,157 @@
+
+name: CodeGen
+
+# Controls when the action will run.
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "Generate"
+  Generate:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2.3.1
+        with:
+          persist-credentials: false
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+
+      - name: Install EmberJS
+        run: |
+          set -x
+          yarn global add ember-cli@3.1.4
+          yarn global add bower
+          npm install -g bower
+          npm install -g ember-cli@3.1.4
+      - name: Install NewPlatform.Flexberry.Designer.CommandLine
+        run: nuget install NewPlatform.Flexberry.Designer.CommandLine -Version 0.1.0-alpha14 -OutputDirectory gen
+
+      - name: Starting X virtual framebuffer (Xvfb) in background
+        run: Xvfb -ac :99 -screen 0 1280x1024x16 &
+
+      - name: Code generation
+        env:
+            FLEXBERRY_TOKEN: ${{ secrets.FLEXBERRY_TOKEN }}   
+        run: |
+          export DISPLAY=:99
+          export SSH_ASKPASS=1
+          export FLEXBERRY_TOKEN
+          mono ./gen/NewPlatform.Flexberry.Designer.CommandLine.0.1.0-alpha14/tools/flexberry.exe ./GenConfig.fdg "${FLEXBERRY_TOKEN}"
+      - name: Tune ssh-keys
+        env:
+            PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}      
+        run: |
+          set -x
+          export PRIVATE_KEY
+          # Setup SSH agent
+          export SSH_AUTH_SOCK=/tmp/ssh_agent.sock
+          mkdir -p ~/.ssh
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          # Start ssh agent
+          ssh-agent -a $SSH_AUTH_SOCK #> /dev/null
+          ssh-add - <<< "${PRIVATE_KEY}"
+      - name: Git commit
+        run: |
+          set -x
+          git config user.name "Flexberry-man"
+          git config user.email "mail@flexberry.net"
+          git add --all
+          git commit -m "Flexberry code generation"
+          # TODO: решить проблему с новыми добавленными файлами, которые не показываются в git diff, пример решения: https://stackoverflow.com/questions/855767/can-i-use-git-diff-on-untracked-files
+          # STATUS=$(git diff)
+          # if [ "$STATUS" != "" ]
+          # then
+          #   git add --all
+          #   git commit -m "Flexberry code generation"
+          # fi
+      - name: Git push
+        run: |
+          set -x
+          SSH_AUTH_SOCK=/tmp/ssh_agent.sock
+          export SSH_AUTH_SOCK;
+          # Redirect any output to /dev/null to hide any sensitive credential data that might otherwise be exposed.
+          git push --force --quiet "git@github.com:${GITHUB_REPOSITORY}.git" > /dev/null 2>&1
+          echo "Done."
+      - name: Git gh-pages
+        run: |
+          set -x
+          GHPAGES=$(jq '.GenerationItems.Frontend.EmberJs.GhPagesPush' ./GenConfig.fdg)
+          if [ "$GHPAGES" = "true" ]
+          then
+            if [ -f "./src/ember-app/config/environment.js" ]
+            then
+              SSH_AUTH_SOCK=/tmp/ssh_agent.sock
+              export SSH_AUTH_SOCK;
+              cd "./src/ember-app"
+              IFS='/' read -ra REPOSITORY_ARRAY <<<"${GITHUB_REPOSITORY}";
+              REPOSITORY_NAME="${REPOSITORY_ARRAY[@]:1}"
+              # Update environment.
+              gh="
+                if (environment === 'gh-pages') {
+                  // For git-pages ENV rootUrl setting.
+                  ENV.rootURL = '/${REPOSITORY_NAME}/';
+                  ENV.locationType = 'hash';
+                }"
+              
+              ifs=$IFS
+              IFS=
+              find=
+              notfinded=1
+              while read str
+              do
+              #  echo "STR=$str"
+               case $str in
+                *if*environment*===*gh-pages*) find=1;;
+                *)
+                  if [ -n "$find" ]
+                  then
+                    case $str in
+                      *}*)
+                        find=
+                        notfinded=
+                        echo  "$gh"
+                      ;;
+                    esac
+                  else
+                    case $str in
+                      *return*ENV*)
+                        if [ -n "$notfinded" ]
+                        then
+                          echo  "$gh"
+                        fi
+                    esac
+                    echo $str
+                  fi
+               esac
+              done < ./config/environment.js > ./config/new_environment.js
+              IFS=$ifs
+              mv ./config/new_environment.js ./config/environment.js
+              # Create offline
+              ember generate flexberry-application-offline app --enable-offline --metadata-dir=./vendor/flexberry --skip-confirmation
+              ember build -e gh-pages
+              BRANCH=$(git branch -l gh-pages)
+              if [ "$BRANCH" = "gh-pages" ]
+              then
+                git branch -d gh-pages
+              fi
+              git checkout --orphan gh-pages
+              git --work-tree ./dist add --all
+              git --work-tree ./dist commit -m "Deploy to GitHub Pages"
+              git push --force --quiet "git@github.com:${GITHUB_REPOSITORY}.git" gh-pages > /dev/null 2>&1
+              cd ../..
+              echo "Successfully deployed"
+            else
+               echo "File environment.js does not exist."
+            fi
+          fi
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -Rf .ssh .github *
