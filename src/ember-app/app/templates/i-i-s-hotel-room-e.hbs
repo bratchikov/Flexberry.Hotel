@@ -1,0 +1,57 @@
+<h3 class="ui header">{{t "forms.i-i-s-hotel-room-e.caption"}}</h3>
+
+<form class="ui form flexberry-vertical-form" role="form">
+  {{flexberry-error error=error}}
+  <div class="field">
+    <div class="flexberry-edit-panel">
+      {{#unless readonly}}
+        <button class="ui button save-button" {{action "save"}}>
+          {{t "forms.edit-form.save-button-text"}}
+        </button>
+        {{#unless model.isNew}}
+          <button class="ui button save-del-button" {{action "delete"}}>
+            {{t "forms.edit-form.delete-button-text"}}
+          </button>
+        {{/unless}}
+      {{/unless}}
+      <button class="ui button close-button" {{action "close"}}>
+        {{t "forms.edit-form.close-button-text"}}
+      </button>
+    </div>
+  </div>
+  <div class="field flexberry-validationsummary-container">
+    <div class="sixteen wide">
+      {{flexberry-validationsummary errors=(v-get validationObject "messages")}}
+    </div>
+  </div>
+  <div class="field">
+    {{flexberry-field
+      readonly=readonly
+      value=model.number
+      class=(if (v-get validationObject "number" "isInvalid") "error")
+      label=(t "forms.i-i-s-hotel-room-e.number-caption")
+      data-test-i-i-s-hotel-room-e-number=true
+    }}
+    {{flexberry-validationmessage error=(v-get validationObject "number" "message")}}
+  </div>
+  <div class="field">
+    {{flexberry-field
+      readonly=readonly
+      value=model.floor
+      class=(if (v-get validationObject "floor" "isInvalid") "error")
+      label=(t "forms.i-i-s-hotel-room-e.floor-caption")
+      data-test-i-i-s-hotel-room-e-floor=true
+    }}
+    {{flexberry-validationmessage error=(v-get validationObject "floor" "message")}}
+  </div>
+  <div class="field">
+    {{flexberry-field
+      readonly=readonly
+      value=model.description
+      class=(if (v-get validationObject "description" "isInvalid") "error")
+      label=(t "forms.i-i-s-hotel-room-e.description-caption")
+      data-test-i-i-s-hotel-room-e-description=true
+    }}
+    {{flexberry-validationmessage error=(v-get validationObject "description" "message")}}
+  </div>
+</form>

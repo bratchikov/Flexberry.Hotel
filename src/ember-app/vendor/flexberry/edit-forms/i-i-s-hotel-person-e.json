@@ -1,0 +1,14 @@
+﻿{
+  "propertyLookup": [],
+  "external": false,
+  "caption": "Person",
+  "name": "IISHotelPersonE",
+  "className": "PersonE",
+  "attrs": [],
+  "projections": [
+    {
+      "modelName": "i-i-s-hotel-person",
+      "modelProjection": "PersonE"
+    }
+  ]
+}

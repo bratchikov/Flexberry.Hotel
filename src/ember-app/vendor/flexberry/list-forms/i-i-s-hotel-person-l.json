@@ -1,0 +1,15 @@
+﻿{
+  "newForm": "i-i-s-hotel-person-e",
+  "editForm": "i-i-s-hotel-person-e",
+  "external": false,
+  "caption": "Person",
+  "name": "IISHotelPersonL",
+  "className": "PersonL",
+  "attrs": [],
+  "projections": [
+    {
+      "modelName": "i-i-s-hotel-person",
+      "modelProjection": "PersonL"
+    }
+  ]
+}

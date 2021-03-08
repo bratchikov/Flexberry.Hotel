@@ -1,0 +1,119 @@
+<h3 class="ui header">{{t "forms.i-i-s-hotel-reservation-e.caption"}}</h3>
+
+<form class="ui form flexberry-vertical-form" role="form">
+  {{flexberry-error error=error}}
+  <div class="field">
+    <div class="flexberry-edit-panel">
+      {{#unless readonly}}
+        <button class="ui button save-button" {{action "save"}}>
+          {{t "forms.edit-form.save-button-text"}}
+        </button>
+        {{#unless model.isNew}}
+          <button class="ui button save-del-button" {{action "delete"}}>
+            {{t "forms.edit-form.delete-button-text"}}
+          </button>
+        {{/unless}}
+      {{/unless}}
+      <button class="ui button close-button" {{action "close"}}>
+        {{t "forms.edit-form.close-button-text"}}
+      </button>
+    </div>
+  </div>
+  <div class="field flexberry-validationsummary-container">
+    <div class="sixteen wide">
+      {{flexberry-validationsummary errors=(v-get validationObject "messages")}}
+    </div>
+  </div>
+  <div class="field">
+    {{flexberry-field
+      readonly=readonly
+      value=model.comment
+      class=(if (v-get validationObject "comment" "isInvalid") "error")
+      label=(t "forms.i-i-s-hotel-reservation-e.comment-caption")
+      data-test-i-i-s-hotel-reservation-e-comment=true
+    }}
+    {{flexberry-validationmessage error=(v-get validationObject "comment" "message")}}
+  </div>
+  <div class="field">
+    <label>{{t "forms.i-i-s-hotel-reservation-e.startDate-caption"}}</label>
+    {{
+      flexberry-simpledatetime
+      type="date"
+      placeholder=(t 'components.flexberry-datepicker.placeholder')
+      readonly=readonly
+      value=model.startDate
+      class=(if (v-get validationObject "startDate" "isInvalid") "error")
+      data-test-i-i-s-hotel-reservation-e-startDate=true
+    }}
+    {{flexberry-validationmessage error=(v-get validationObject "startDate" "message")}}
+  </div>
+
+  <div class="field">
+    <label>{{t "forms.i-i-s-hotel-reservation-e.endDate-caption"}}</label>
+    {{
+      flexberry-simpledatetime
+      type="date"
+      placeholder=(t 'components.flexberry-datepicker.placeholder')
+      readonly=readonly
+      value=model.endDate
+      class=(if (v-get validationObject "endDate" "isInvalid") "error")
+      data-test-i-i-s-hotel-reservation-e-endDate=true
+    }}
+    {{flexberry-validationmessage error=(v-get validationObject "endDate" "message")}}
+  </div>
+
+  <div class="field">
+    <label>{{t "forms.i-i-s-hotel-reservation-e.person-caption"}}</label>
+    {{flexberry-lookup
+      choose="showLookupDialog"
+      remove="removeLookupValue"
+      value=model.person
+      relationName="person"
+      projection="PersonL"
+      title=(t "forms.i-i-s-hotel-reservation-e.person-caption")
+      readonly=readonly
+      componentName="personLookup"
+      class=(if (v-get validationObject "person" "isInvalid") "error")
+      data-test-i-i-s-hotel-reservation-e-person=true
+    }}
+    {{flexberry-validationmessage error=(v-get validationObject "person" "message")}}
+  </div>
+
+  <div class="field">
+    {{flexberry-field
+      readonly=true
+      value=model.person.name
+      class=(if (v-get validationObject.person "name" "isInvalid") "error")
+      label=(t "forms.i-i-s-hotel-reservation-e.person.name-caption")
+      data-test-i-i-s-hotel-reservation-e-person-name=true
+    }}
+    {{flexberry-validationmessage error=(v-get validationObject.person "name" "message")}}
+  </div>
+  <div class="field">
+    <label>{{t "forms.i-i-s-hotel-reservation-e.room-caption"}}</label>
+    {{flexberry-lookup
+      choose="showLookupDialog"
+      remove="removeLookupValue"
+      value=model.room
+      relationName="room"
+      projection="RoomL"
+      title=(t "forms.i-i-s-hotel-reservation-e.room-caption")
+      readonly=readonly
+      componentName="roomLookup"
+      class=(if (v-get validationObject "room" "isInvalid") "error")
+      data-test-i-i-s-hotel-reservation-e-room=true
+    }}
+    {{flexberry-validationmessage error=(v-get validationObject "room" "message")}}
+  </div>
+
+  <div class="field">
+    {{flexberry-field
+      readonly=true
+      value=model.room.description
+      class=(if (v-get validationObject.room "description" "isInvalid") "error")
+      label=(t "forms.i-i-s-hotel-reservation-e.room.description-caption")
+      data-test-i-i-s-hotel-reservation-e-room-description=true
+    }}
+    {{flexberry-validationmessage error=(v-get validationObject.room "description" "message")}}
+  </div>
+</form>

@@ -1,0 +1,14 @@
+﻿{
+  "propertyLookup": [],
+  "external": false,
+  "caption": "Room",
+  "name": "IISHotelRoomE",
+  "className": "RoomE",
+  "attrs": [],
+  "projections": [
+    {
+      "modelName": "i-i-s-hotel-room",
+      "modelProjection": "RoomE"
+    }
+  ]
+}

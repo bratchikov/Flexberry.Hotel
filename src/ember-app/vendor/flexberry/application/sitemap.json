@@ -1,0 +1,36 @@
+﻿{
+  "applicationCaption": "Hotel",
+  "applicationTitle": "Hotel",
+  "items": [
+    {
+      "link": null,
+      "menuName": "hotel",
+      "caption": "Hotel",
+      "title": "Hotel",
+      "children": [
+        {
+          "link": "i-i-s-hotel-room-l",
+          "menuName": null,
+          "caption": "Room",
+          "title": "",
+          "children": null
+        },
+        {
+          "link": "i-i-s-hotel-person-l",
+          "menuName": null,
+          "caption": "Person",
+          "title": "",
+          "children": null
+        },
+        {
+          "link": "i-i-s-hotel-reservation-l",
+          "menuName": null,
+          "caption": "Reservation",
+          "title": "",
+          "children": null
+        }
+      ]
+    }
+  ],
+  "mobile": true
+}

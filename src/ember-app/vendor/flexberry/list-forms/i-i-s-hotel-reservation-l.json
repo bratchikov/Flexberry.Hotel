@@ -1,0 +1,15 @@
+﻿{
+  "newForm": "i-i-s-hotel-reservation-e",
+  "editForm": "i-i-s-hotel-reservation-e",
+  "external": false,
+  "caption": "Reservation",
+  "name": "IISHotelReservationL",
+  "className": "ReservationL",
+  "attrs": [],
+  "projections": [
+    {
+      "modelName": "i-i-s-hotel-reservation",
+      "modelProjection": "ReservationL"
+    }
+  ]
+}

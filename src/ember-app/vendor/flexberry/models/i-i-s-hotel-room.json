@@ -1,0 +1,96 @@
+﻿{
+  "name": "IISHotelRoom",
+  "modelName": "i-i-s-hotel-room",
+  "className": "Room",
+  "nameSpace": "IIS.Hotel",
+  "parentModelName": null,
+  "parentClassName": null,
+  "attrs": [
+    {
+      "name": "floor",
+      "type": "number",
+      "flexberryType": "int",
+      "notNull": false,
+      "defaultValue": "",
+      "stored": true,
+      "ordered": false
+    },
+    {
+      "name": "number",
+      "type": "number",
+      "flexberryType": "int",
+      "notNull": false,
+      "defaultValue": "",
+      "stored": true,
+      "ordered": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "flexberryType": "string",
+      "notNull": false,
+      "defaultValue": "",
+      "stored": true,
+      "ordered": false
+    }
+  ],
+  "belongsTo": [],
+  "hasMany": [],
+  "projections": [
+    {
+      "name": "RoomE",
+      "modelName": "i-i-s-hotel-room",
+      "attrs": [
+        {
+          "name": "number",
+          "caption": "Number",
+          "hidden": false,
+          "index": 0
+        },
+        {
+          "name": "floor",
+          "caption": "Floor",
+          "hidden": false,
+          "index": 1
+        },
+        {
+          "name": "description",
+          "caption": "Description",
+          "hidden": false,
+          "index": 2
+        }
+      ],
+      "belongsTo": [],
+      "hasMany": []
+    },
+    {
+      "name": "RoomL",
+      "modelName": "i-i-s-hotel-room",
+      "attrs": [
+        {
+          "name": "number",
+          "caption": "Number",
+          "hidden": false,
+          "index": 0
+        },
+        {
+          "name": "floor",
+          "caption": "Floor",
+          "hidden": false,
+          "index": 1
+        },
+        {
+          "name": "description",
+          "caption": "Description",
+          "hidden": false,
+          "index": 2
+        }
+      ],
+      "belongsTo": [],
+      "hasMany": []
+    }
+  ],
+  "stored": true,
+  "offline": true,
+  "external": false
+}
